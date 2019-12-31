@@ -1,8 +1,18 @@
 package com.example.demoretrofit;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.Signature;
+import android.os.Bundle;
+import android.util.Base64;
+import android.util.Log;
+
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.os.Bundle;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -12,7 +22,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
     }
 
-//    private String getErrorMessage(Response error) {
+    //    private String getErrorMessage(Response error) {
 //        String message = "";
 //        try {
 //            assert error.errorBody() != null;
@@ -25,4 +35,19 @@ public class MainActivity extends AppCompatActivity {
 //        }
 //        return message;
 //    }
+    public void printHashKey(Context pContext) {
+        try {
+            @SuppressLint("PackageManagerGetSignatures") PackageInfo info = pContext.getPackageManager().getPackageInfo(pContext.getPackageName(), PackageManager.GET_SIGNATURES);
+            for (Signature signature : info.signatures) {
+                MessageDigest md = MessageDigest.getInstance("SHA");
+                md.update(signature.toByteArray());
+                String hashKey = new String(Base64.encode(md.digest(), 0));
+                Log.i("key1", "printHashKey() Hash Key: " + hashKey);
+            }
+        } catch (NoSuchAlgorithmException e) {
+            Log.e("key", "printHashKey()", e);
+        } catch (Exception e) {
+            Log.e("haskhkey", "printHashKey()", e);
+        }
+    }
 }
